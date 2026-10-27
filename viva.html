@@ -1,0 +1,55 @@
+<!doctype html><html lang="en"><head><title>EcoRewind Viva Guide</title><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css"></head><body>
+<header class="topbar"><h1 class="display" style="font-size:1.3rem">Viva guide</h1>
+<nav><a href="terminal.html" target="_blank" rel="noopener">Terminal</a><a href="wallet.html" target="_blank" rel="noopener">Wallet</a><a href="tests.html" target="_blank" rel="noopener">Tests</a></nav></header>
+<main class="wrap" style="max-width:900px;display:grid;gap:1.1rem">
+
+<section class="card"><h2>Before you start</h2>
+<div class="row"><button class="btn danger" id="reset" type="button">New demo wallet</button><span id="state" class="lbl" style="margin:0"></span></div>
+<p style="color:var(--mute);font-size:.9rem;margin:.7rem 0 0">Start with <code>start.sh</code> or <code>start.bat</code> and wait for "Scanner service ready" in the console. Run the test page once, allow the camera on the terminal, and place the terminal and wallet tabs side by side. Keep a bottle, a can and a non-recyclable object (or photos of them) within reach.</p></section>
+
+<section class="card"><h2>Five-minute demo script</h2>
+<ul class="steps" id="demo">
+<li><label><input type="checkbox"><span><b>Set the scene (20 s).</b> India has no deposit scheme for plastic bottles. This kiosk pays citizens by the gram, so recycling becomes worth doing.</span></label></li>
+<li><label><input type="checkbox"><span><b>Valid deposit.</b> Hold a plastic bottle to the camera (or use Scan photo file). The live card turns green. Set 250 g and press Deposit &amp; Claim ₹5.00. Point at the wallet: ₹5.00 arrived with no refresh.</span></label></li>
+<li><label><input type="checkbox"><span><b>Fraud attempt.</b> Show a non-recyclable object at 300 g. The model labels it Invalid item; press Insert anyway. The server logs a rejection and no money moves. Explain that weight alone can be gamed.</span></label></li>
+<li><label><input type="checkbox"><span><b>The 100 g rule.</b> A bottle at 80 g is flagged as a low-density anomaly and rejected by the server. At 100 g it passes.</span></label></li>
+<li><label><input type="checkbox"><span><b>Server is the judge.</b> The browser only previews. On deposit the server re-classifies the frame and recomputes the payout, so editing the page cannot change what is paid.</span></label></li>
+<li><label><input type="checkbox"><span><b>Dynamic tariff.</b> 450 g aluminium can: 4 paise/g = ₹18.00 plus the 10% heavy-load bonus = ₹19.80.</span></label></li>
+<li><label><input type="checkbox"><span><b>Impact view.</b> Show kg recycled, CO₂ avoided, bottle equivalents, the progress bar and the rejected-attempts counter. Export the CSV.</span></label></li>
+<li><label><input type="checkbox"><span><b>Cash out.</b> Request a ₹2 withdrawal to a UPI ID. The balance drops at once and the request shows as pending until an operator pays it.</span></label></li>
+</ul></section>
+
+<section class="card"><h2>How the data moves</h2>
+<div class="flow"><div><b>Terminal tab</b>Camera frame and load-cell weight, live preview only</div><div class="arrow">→</div>
+<div><b>serve.py /api</b>Same-origin proxy; admin routes and project files are not exposed</div><div class="arrow">→</div>
+<div><b>Scanner service</b>FastAPI: MobileNetV2 model, tariff rules, payout</div><div class="arrow">→</div>
+<div><b>SQLite ledger</b>Deposit and wallet credit in one transaction</div><div class="arrow">→</div>
+<div><b>Wallet tab</b>Pinged by the terminal, then refetches from the server</div></div>
+<p style="color:var(--mute);font-size:.9rem;margin:.8rem 0 0">A real deployment moves the service and database to a cloud host and adds user login; the screens stay the same.</p></section>
+
+<section class="card"><h2>Likely questions and answers</h2>
+<details><summary>Where is the money stored?</summary><p>In a SQLite ledger owned by the scanner service, not in the browser. Each scan is recorded and the wallet credited inside one <code>BEGIN IMMEDIATE</code> transaction, balances have a database check that they never go negative, and the browser only ever sees the result.</p></details>
+<details><summary>What would a real machine use?</summary><p>Load cells with an HX711 amplifier for weight, a camera with an on-device model such as MobileNet or YOLO for classification, a microcontroller or Raspberry Pi to run the logic, and MQTT or a REST API to send each transaction to a cloud database. Payouts would go through UPI.</p></details>
+<details><summary>Is the AI real?</summary><p>Yes. It is a MobileNetV2 model fine-tuned on four classes (plastic bottle, aluminium can, plastic bag, other) and scores 86% accuracy on the held-out test set. It runs on the server; anything under 75% confidence is rejected and the user is asked to rescan.</p></details>
+<details><summary>How do you stop people cheating?</summary><p>The browser cannot set the payout: the server re-classifies the deposited frame and applies its own tariff. Weight is only paid after the item is classified as payable, and must be between 100 g and 500 g. In this simulation the weight comes from a slider; a real machine reads the load cell on its own controller. Real machines also add barcode, shape and transparency checks and per-user rate limits.</p></details>
+<details><summary>Why is the minimum 100 g?</summary><p>Very light items are usually caps, wrappers or sensor noise rather than a whole container. The threshold is one setting, <code>ECOREWIND_MIN_WEIGHT_G</code>, on the server, and the terminal reads it from <code>/api/rates</code>.</p></details>
+<details><summary>Why store money as paise?</summary><p>Floating-point numbers cannot represent values like 0.1 exactly, so repeated additions drift. Integers never do. The wallet stores whole paise and only formats rupees for display.</p></details>
+<details><summary>How does the second tab update without a reload?</summary><p>After a deposit the terminal sends a BroadcastChannel message to other tabs of the same origin, and the wallet refetches from the server. The wallet also polls every 5 seconds, which picks up changes made elsewhere, such as an operator paying a withdrawal.</p></details>
+<details><summary>What if two terminals write at the same time, or the network drops?</summary><p>SQLite serialises writers, and each deposit is a single transaction, so two terminals cannot interleave a read-modify-write. Every deposit carries an Idempotency-Key: if the response is lost and the terminal retries, the server returns the original result instead of paying twice.</p></details>
+<details><summary>What would you add next?</summary><p>User login by phone number or QR, a real UPI payout integration (withdrawals are approved by an operator today), signed load-cell readings, per-material pricing from live scrap rates, and a municipal dashboard showing bin fill levels and collection routes.</p></details>
+</section>
+
+<section class="card"><h2>If something goes wrong</h2>
+<ul style="margin:0;padding-left:1.1rem;color:var(--mute)">
+<li>Wallet not updating or showing a different balance: both tabs must use the same address (both localhost:8000, not one on 127.0.0.1), because the linked wallet ID is stored per address.</li>
+<li>Terminal says "Scanner service offline": check the serve.py console. The model takes a few seconds to load after start.</li>
+<li>No camera: use Scan photo file with a photo of a bottle or can.</li>
+<li>Messy data mid-demo: press New demo wallet above to continue on a fresh, empty wallet.</li>
+<li>Live demo fails entirely: show the backup captures in <code>screenshots/</code> and walk through them.</li></ul></section>
+</main>
+<script type="module" src="js/viva.js"></script></body></html>

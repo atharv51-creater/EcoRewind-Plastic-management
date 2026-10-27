@@ -1,0 +1,3 @@
+# TensorFlow does not publish wheels for every Python version.
+# Use Python 3.11 or 3.12 on the machine that serves the model.
+tensorflow>=2.15,<3; python_version < "3.14"

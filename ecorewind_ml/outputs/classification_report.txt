@@ -1,0 +1,10 @@
+                precision    recall  f1-score   support
+
+ aluminium_can      0.875     0.852     0.863       115
+ other_invalid      0.849     0.783     0.815       180
+   plastic_bag      0.925     0.892     0.908       111
+plastic_bottle      0.826     0.933     0.876       163
+
+      accuracy                          0.861       569
+     macro avg      0.869     0.865     0.866       569
+  weighted avg      0.863     0.861     0.860       569

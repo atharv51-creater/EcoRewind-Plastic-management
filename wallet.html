@@ -1,0 +1,49 @@
+<!doctype html><html lang="en"><head><title>EcoRewind Wallet</title><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css"></head><body>
+<header class="topbar"><h1 class="display" style="font-size:1.3rem">EcoRewind Wallet</h1>
+<div class="row"><span class="sync"><i></i><span id="syncTxt">Connecting to server…</span></span>
+<nav><a href="terminal.html" target="_blank" rel="noopener">Terminal</a><a href="wallet.html" aria-current="page">Wallet</a><a href="viva.html" target="_blank" rel="noopener">Viva guide</a><a href="tests.html" target="_blank" rel="noopener">Tests</a></nav></div></header>
+<main class="wrap">
+<section class="balance" aria-label="Balance">
+ <div class="row" style="justify-content:space-between">
+  <div class="lbl" style="color:#cfe3df;margin:0">Wallet <b id="userId" style="color:#fff"></b></div>
+  <div class="row"><button class="btn" id="switchUser" type="button">Use wallet ID…</button>
+  <button class="btn danger" id="reset" type="button">New demo wallet</button></div></div>
+ <div class="lbl" style="color:#cfe3df;margin-top:.6rem">Available balance</div>
+ <div class="big num" id="bal">₹0.00</div>
+ <div style="margin-top:1rem;color:#cfe3df;font-size:.9rem"><span id="mileTxt"></span></div>
+ <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="mileBar"><i id="mileFill" style="background:var(--gold)"></i></div>
+</section>
+<section class="stats" aria-label="Eco impact">
+ <div class="card stat"><b id="kg" class="num">0</b><span>kg of material recycled</span></div>
+ <div class="card stat"><b id="co2" class="num">0</b><span>kg CO₂ avoided (estimate)</span></div>
+ <div class="card stat"><b id="bottles" class="num">0</b><span>bottle equivalents diverted</span></div>
+ <div class="card stat"><b id="rej" class="num">0</b><span>deposits rejected</span></div>
+</section>
+<section class="card" style="margin-top:1.1rem" aria-label="Transactions">
+ <div class="row" style="justify-content:space-between;margin-bottom:.7rem">
+  <h2 style="margin:0">Transaction history</h2>
+  <div class="row"><select id="filter" aria-label="Filter"><option value="all">All</option><option value="accepted">Confirmed</option><option value="rejected">Rejected</option></select>
+  <button class="btn" id="csv" type="button">Export CSV</button></div></div>
+ <div class="tablewrap"><table><thead><tr><th>Txn</th><th>Time</th><th>Item</th><th class="r">Weight</th><th>Status</th><th class="r">Payout</th></tr></thead><tbody id="rows"></tbody></table></div>
+ <div class="empty" id="empty" hidden>No deposits yet. Make one on the terminal and it will appear here.</div>
+ <div class="lbl" id="histNote" style="margin:.6rem 0 0" hidden></div>
+</section>
+<section class="card" style="margin-top:1.1rem" aria-label="Withdrawals">
+ <h2>Withdraw to UPI</h2>
+ <form id="wdForm" class="row" novalidate>
+  <label class="lbl" style="margin:0">Amount (₹)<br><input id="wdAmount" type="text" inputmode="decimal" autocomplete="off" placeholder="50.00" size="10" required></label>
+  <label class="lbl" style="margin:0">UPI ID<br><input id="wdDest" type="text" autocomplete="off" placeholder="name@bank" maxlength="120" size="22" required></label>
+  <button class="btn primary" id="wdBtn" type="submit" style="align-self:flex-end">Request withdrawal</button>
+ </form>
+ <p class="lbl" style="margin:.6rem 0 .8rem">The amount leaves your balance as soon as you request it and stays pending until an operator marks it paid. A cancelled request is refunded.</p>
+ <div id="wdAlert"></div>
+ <div class="tablewrap"><table><thead><tr><th>Request</th><th>Time</th><th>To</th><th>Status</th><th class="r">Amount</th></tr></thead><tbody id="wdRows"></tbody></table></div>
+ <div class="empty" id="wdEmpty" hidden>No withdrawals yet.</div>
+</section></main>
+<div class="toast" id="toast" role="status"></div>
+<script type="module" src="js/wallet.js"></script></body></html>

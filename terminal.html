@@ -1,0 +1,73 @@
+<!doctype html><html lang="en"><head><title>EcoRewind RVM Terminal</title><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; media-src 'self' blob: mediastream:; connect-src 'self' https://cdn.jsdelivr.net https://storage.googleapis.com https://tfhub.dev; worker-src 'self' blob:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css"></head><body>
+<header class="topbar"><h1 class="display" style="font-size:1.3rem">EcoRewind RVM-01</h1>
+<nav><a href="terminal.html" aria-current="page">Terminal</a><a href="wallet.html" target="_blank" rel="noopener">Wallet</a><a href="viva.html" target="_blank" rel="noopener">Viva guide</a><a href="tests.html" target="_blank" rel="noopener">Tests</a></nav></header>
+<main class="wrap grid2">
+<section class="card" aria-label="Scanner">
+  <h2>Scanner (Continuous Vision Feed)</h2>
+  <div class="stage" id="stage">
+   <video id="video" autoplay playsinline muted></video>
+   <canvas id="overlay"></canvas>
+   <div class="hud">
+    <span class="pill" id="camPill">Camera off</span>
+    <span class="pill ai-pill" id="modelPill">AI: 4-Class MobileNetV2</span>
+   </div>
+   <div class="msg" id="camMsg">Starting camera…</div>
+  </div>
+  <div class="row" style="margin-top:.8rem;justify-content:space-between">
+   <div class="row" style="gap:.4rem;flex-wrap:wrap">
+    <button class="btn" id="camBtn" type="button" title="Connect to webcam feed">📹 Live camera</button>
+    <button class="btn" id="uploadBtn" type="button" title="Upload a photo file to scan">📁 Upload photo</button>
+    <button class="btn" id="sampleBottleBtn" type="button" title="Load real test sample: PET Bottle">🧴 Bottle</button>
+    <button class="btn" id="sampleCanBtn" type="button" title="Load real test sample: Aluminium Can">🥫 Can</button>
+    <button class="btn" id="sampleBagBtn" type="button" title="Load real test sample: Plastic Bag">🛍️ Bag</button>
+    <button class="btn" id="sampleTrashBtn" type="button" title="Load real test sample: Invalid Trash">❌ Trash</button>
+    <input type="file" id="fileInput" accept="image/*" style="display:none">
+   </div>
+   <span class="lbl" style="margin:0">Linked wallet <b id="linkedUser"></b>: <b id="linked" class="num">₹0.00</b></span>
+  </div>
+  <h2 style="margin-top:1.1rem">Machine log</h2>
+  <div class="log" id="log" role="log" aria-live="polite"></div>
+ </section>
+ <section class="card" aria-label="Controls">
+  <h2>Deposit & Live AI Valuation</h2>
+  <div class="field" style="margin-top:0"><span class="lbl">Load cell weight sensor</span>
+   <div class="readout num"><span id="wOut">250</span><small>g</small></div>
+   <input id="weight" type="range" min="0" max="500" step="5" value="250" aria-label="Item weight in grams">
+   <div class="scale"><span>0 g</span><span class="min">100 g minimum</span><span>500 g</span></div>
+  </div>
+
+  <!-- Real-time Continuous AI Item Recognition Display -->
+  <div class="field" style="margin-top:1.2rem">
+   <div class="live-ai-card" id="aiCard">
+    <div class="live-ai-header">
+     <span class="ai-badge pulse" id="aiPulse"><i class="dot"></i> Continuous AI Active</span>
+     <span class="conf-pill" id="aiConf">Scanning…</span>
+    </div>
+    <div class="detected-item-name" id="aiDetectedName">Looking for recyclable item…</div>
+    <div class="detected-item-desc" id="aiDetectedDesc">Hold a plastic bottle, aluminium can, or plastic bag in view of the camera</div>
+   </div>
+  </div>
+
+  <!-- Real-time Rupee Payout Card -->
+  <div class="field" style="margin-top:1rem">
+   <div class="rupee-card" id="rupeeCard">
+    <div class="rupee-label">Real-time Payout (Rupees)</div>
+    <div class="rupee-amount"><span class="sym">₹</span><span class="val num" id="est">0.00</span></div>
+    <div class="rupee-calc" id="rateDetail">Position item in chamber to calculate payout…</div>
+   </div>
+  </div>
+
+  <div class="field" style="margin-top:1.2rem">
+   <button class="btn gold" id="confirmBtn" type="button" style="width:100%;font-size:1.05rem;padding:.9rem 1.2rem" disabled>
+    Hold recyclable item in view
+   </button>
+  </div>
+  <div class="field" aria-live="assertive"><div id="alertBox"></div></div>
+ </section>
+</main>
+<script type="module" src="js/terminal.js"></script></body></html>

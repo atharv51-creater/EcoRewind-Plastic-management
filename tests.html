@@ -1,0 +1,25 @@
+<!doctype html><html lang="en"><head><title>EcoRewind Tests</title><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css"></head><body>
+<header class="topbar"><h1 class="display" style="font-size:1.3rem">EcoRewind test bench</h1>
+<nav><a href="index.html">Home</a><a href="viva.html">Viva guide</a></nav></header>
+<main class="wrap" style="max-width:860px">
+<section class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">Automated checks</h2><button class="btn primary" id="run" type="button">Run all tests</button></div>
+<p style="color:var(--mute);font-size:.9rem">Needs the scanner service running (start.sh / start.bat). Server checks use a throwaway <code>test-…</code> wallet with rejected scans only, so no money is credited. Your linked wallet ID is restored after the run; other open wallet tabs may briefly show the test wallet.</p>
+<div class="summary" id="summary">Not run yet</div><div id="results"></div></section>
+<section class="card" style="margin-top:1.1rem"><h2>Manual checklist (two tabs side by side)</h2>
+<ul class="steps" id="manual">
+<li><label><input type="checkbox"> Plastic bottle in view at 250 g: Deposit &amp; Claim ₹5.00; wallet shows +₹5.00 and a new row within a second</label></li>
+<li><label><input type="checkbox"> Non-recyclable object at 300 g: red card, Insert anyway logs a rejected row, balance unchanged</label></li>
+<li><label><input type="checkbox"> Bottle at 80 g: low-density warning; inserting it logs a rejection, no payout</label></li>
+<li><label><input type="checkbox"> Aluminium can at 450 g: ₹19.80 including the 10% bonus</label></li>
+<li><label><input type="checkbox"> Refresh the wallet tab, or close it, deposit, and reopen it: full history shows</label></li>
+<li><label><input type="checkbox"> Request a ₹2 withdrawal: balance drops, request shows as Pending</label></li>
+<li><label><input type="checkbox"> Block the camera permission: Scan photo file still works</label></li>
+<li><label><input type="checkbox"> Stop serve.py: terminal shows Scanner offline and the wallet shows Server unreachable; restart and both recover</label></li>
+<li><label><input type="checkbox"> New demo wallet on the wallet page: terminal's linked wallet switches and shows ₹0.00</label></li>
+</ul></section></main>
+<script type="module" src="js/tests.js"></script></body></html>
